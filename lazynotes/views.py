@@ -2,6 +2,7 @@ from django.http.response import Http404
 from django.shortcuts import render,redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Note
 from .forms import NoteCreationForm
@@ -37,6 +38,7 @@ class NoteDeleteView(generic.DeleteView):
             raise Http404
         return note
 #Function Based
+@login_required
 def home(request):
     notes = Note.objects.filter(user = request.user).order_by('-updated_on')
     return render(request,'lazynotes/home.html',{"Notes":notes})
