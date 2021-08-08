@@ -1,3 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
+<div class = "container">
+    <h1 class = "text-center">Note{{note_count|pluralize}}</h1>
+    <hr/>
+    {% if Notes %}
+    <div class='container d-inline-block'>
+        <div class = "row">
+            {% for note in Notes %}
+                <div class = "col-lg-4 col-md-6">
+                    <div class="card custom-card border border-dark">
+                        <a class = "custom-link"href="{% url 'note_detail' note.id note.slug %}">
+                            <div class="card-body">
+                                <h5 class="card-title">Title : {{note.title}}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Subject :  {{note.subject}}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted"><i class="fas fa-calendar-day"></i> {{note.updated_on}}</h6>
+                                <p class="card-text">{{ note.notes|safe|truncatechars:150 }}</p>
+                                <br/>
+                                <div class = "d-inline-block">
+                                    <a href="{% url 'note_detail' note.id note.slug %}" class="btn btn-success me-2">View</a>
+                                    <a href="{% url 'note_update' note.id note.slug %}" class="btn btn-primary me-2">Update</a>
+                                    <a href="#" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class = "d-flex d-inline-block float-end py-2">
+                <a href = "{% url 'note_create' %}" class = "btn btn-primary"><i class="fas fa-plus"></i> Add Note</a>
+            </div>
+    {% else %}
+        <div class = "d-flex d-inline-block justify-content-center">
+            <a href = "{% url 'note_create' %}" class = "btn btn-primary"><i class="fas fa-plus"></i> Add Note</a>
+        </div>
+    </div>
+    {% endif %}
+    
+</div>
 {% endblock %}
