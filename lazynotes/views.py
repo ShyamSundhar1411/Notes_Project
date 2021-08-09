@@ -1,12 +1,18 @@
-from django.http.response import Http404
-from django.shortcuts import render,redirect
-from django.urls import reverse, reverse_lazy
-from django.contrib.auth.models import User
+import os
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.conf import settings
 from django.views import generic
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse, reverse_lazy
+from django.shortcuts import render,redirect,get_object_or_404
+from django.http.response import Http404, HttpResponse
+from django.template.loader import get_template
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from .models import Note,Profile
-from .forms import NoteCreationForm,UserProfileForm,ProfileForm
+from .forms import NoteCreationForm,UserForm,ProfileForm
+from .tasks import send_requested_pdf_note
 # Create your views here.
 #Class Based
 class NoteDetailView(generic.DetailView):
@@ -57,4 +63,46 @@ def create_note(request):
         return render(request,'lazynotes/add_notes.html',{'form':NoteCreationForm()})
 @login_required
 def profile(request,slug):
-   pass
+    if request.method == 'POST':
+        user_form = UserForm(request.POST,instance = request.user)
+        profile_form = ProfileForm(request.POST,request.FILES,instance = request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request,'Profile Update Successfully')
+            return redirect('profile',slug = request.user.profile.slug)
+        else:
+            return render(request, 'account/profile.html', {'user_form':user_form,'profile_form':profile_form,'user_form_errors':user_form.errors,'profile_form_errors':profile_form.errors})
+    else:
+        user_form = UserForm(instance = request.user)
+        profile_form = ProfileForm(instance = request.user.profile)
+    return render(request,'account/profile.html',{'user_form':user_form,'profile_form':profile_form})
+#pdf
+def render_to_pdf_download_view(request,pk):
+    template_path = "lazynotes/note.html"
+    note = get_object_or_404(Note,pk = pk, user = request.user)
+    context = {"Note":note}
+    links    = lambda uri, rel: os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ''))
+    response = HttpResponse(content_type = "application/pdf")
+    response['Content-Disposition'] = 'attachment; filename = {}.pdf'.format(note.title)
+    template = get_template(template_path)
+    html = template.render(context)
+    pisa_status = pisa.CreatePDF(
+        html,dest = response,link_callback = links)
+    if pisa_status.err:
+        return HttpResponse("We had some errors <pre>"+html+"</pre>")
+    return response
+def render_to_pdf_mail_view(request,pk):
+    template_path = "lazynotes/note.html"
+    note = get_object_or_404(Note,pk = pk, user = request.user)
+    context = {"Note":note}
+    template = get_template(template_path)
+    html = template.render(context)
+    links    = lambda uri, rel: os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ''))
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")),result,link_callback = links)
+    pdf = result.getvalue()
+    filename = str(note.title)+'.pdf'
+    send_requested_pdf_note(filename,pdf,request.user.id)
+    messages.info(request,"The requested PDF has been sent to the registered email.")
+    return redirect('note_detail',note.id,note.slug)

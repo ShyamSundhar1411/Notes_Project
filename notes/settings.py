@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'crispy_forms',
+    'django_celery_results',
     #Authentication
     'allauth',
     'allauth.account',
@@ -147,7 +148,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_IMAGE_BACKEND = "pillow"
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#Email Backends
+EMAIL_BACKEND = env.str('EMAIL_BACKEND')
+EMAIL_USE_TLS = True
+EMAIL_USER_SSL = False
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = env.int('EMAIL_PORT')
+DEFAULT_FROM_EMAIL = 'CodeBusters Team <noreply@expensemanager.com>'
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
     messages.INFO: 'alert-info',
@@ -160,6 +169,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CELERY_RESULT_BACKEND = 'django-cache'
+CELERY_CACHE_BACKEND = 'default'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {

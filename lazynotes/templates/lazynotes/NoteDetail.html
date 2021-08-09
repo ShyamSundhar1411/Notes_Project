@@ -4,7 +4,15 @@
     <h1 class = "text-center">{{note.title}}</h1>
     <hr/>
     <div class  = "display-inline d-flex float-end py-1">
-        <a href = "#" class = "btn btn-primary">Generate PDF</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle text-decoration-none btn border border-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Generate PDF
+            </a>
+            <ul class="dropdown-menu dropdown-content" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="{% url 'render_to_pdf_download' note.id %}">Download</a></li>
+                <li><a class="dropdown-item" href="{% url 'render_to_pdf_mail' note.id %}">Send Mail</a></li>
+            </ul>
+        </div>
     </div>
     <div class = "content-container container-fluid border border-dark">
         <div class = "subtitle text-muted py-1">Updated On : {{note.updated_on}}</div>

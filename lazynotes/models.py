@@ -26,7 +26,7 @@ class Profile(models.Model):
     ]
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     avatar = models.ImageField(blank = True,upload_to = 'avatars/')
-    gender = models.CharField(max_length = 6, choices = GENDER, default = 'None')
+    gender = models.CharField(blank = True,max_length = 6, choices = GENDER, default = 'None')
     slug = models.SlugField(blank = True,unique= True)
     
     def __str__(self):

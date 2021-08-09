@@ -2,7 +2,7 @@
 {% block content %}
 {% load static %}
 <div class = "container">
-    <h1 class = "text-center">Note{{note_count|pluralize}}</h1>
+    <h1 class = "text-center">Note{{Notes.count|pluralize}}</h1>
     <hr/>
     {% if Notes %}
     <div class='container d-inline-block'>
