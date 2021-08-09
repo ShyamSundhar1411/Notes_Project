@@ -6,21 +6,28 @@ from django.views import generic
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render,redirect,get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http.response import Http404, HttpResponse
 from django.template.loader import get_template
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from .models import Note,Profile
 from .forms import NoteCreationForm,UserForm,ProfileForm
 from .tasks import send_requested_pdf_note
 # Create your views here.
 #Class Based
-class NoteDetailView(generic.DetailView):
+class NoteDetailView(LoginRequiredMixin,generic.DetailView):
     model = Note
     slug_field = Note.slug
     template_name = "lazynotes/NoteDetail.html"
     fields = ['title','notes','subject','updated_on']
-class NoteUpdateView(generic.UpdateView):
+    def get_object(self):
+        note = super(NoteDetailView,self).get_object()
+        if not note.user == self.request.user:
+            raise Http404
+        return note
+class NoteUpdateView(LoginRequiredMixin,generic.UpdateView):
     model = Note
     slug_field = Note.slug
     template_name = "lazynotes/NoteUpdate.html"
@@ -34,7 +41,7 @@ class NoteUpdateView(generic.UpdateView):
         pk = self.kwargs["pk"]
         slug = self.kwargs["slug"]
         return reverse("note_update", kwargs={"slug":slug,"pk": pk})
-class NoteDeleteView(generic.DeleteView):
+class NoteDeleteView(LoginRequiredMixin,generic.DeleteView):
     model = Note
     slug_field = Note.slug
     template_name = "lazynotes/NoteDelete.html"
@@ -47,8 +54,22 @@ class NoteDeleteView(generic.DeleteView):
 #Function Based
 @login_required
 def home(request):
+    note = Note.objects.filter(user = request.user).order_by('-updated_on')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(note,3)
+    note_count = paginator.count
+    try:
+        notes = paginator.page(page)
+    except PageNotAnInteger :
+        notes = paginator.page(1)
+    except EmptyPage:
+        notes = paginator.page(paginator.num_pages)
+    return render(request,'lazynotes/home.html',{"Notes":notes,'note_count':note_count})
+@login_required
+def viewallnotes(request):
     notes = Note.objects.filter(user = request.user).order_by('-updated_on')
-    return render(request,'lazynotes/home.html',{"Notes":notes})
+    return render(request,'lazynotes/viewallnotes.html',{"Notes":notes})
+@login_required
 def create_note(request):
     if request.method=='POST':
         try:
@@ -78,6 +99,7 @@ def profile(request,slug):
         profile_form = ProfileForm(instance = request.user.profile)
     return render(request,'account/profile.html',{'user_form':user_form,'profile_form':profile_form})
 #pdf
+@login_required
 def render_to_pdf_download_view(request,pk):
     template_path = "lazynotes/note.html"
     note = get_object_or_404(Note,pk = pk, user = request.user)
@@ -92,6 +114,7 @@ def render_to_pdf_download_view(request,pk):
     if pisa_status.err:
         return HttpResponse("We had some errors <pre>"+html+"</pre>")
     return response
+@login_required
 def render_to_pdf_mail_view(request,pk):
     template_path = "lazynotes/note.html"
     note = get_object_or_404(Note,pk = pk, user = request.user)

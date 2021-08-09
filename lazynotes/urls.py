@@ -9,4 +9,5 @@ urlpatterns = [
     path('delete/<int:pk>/<slug:slug>/',views.NoteDeleteView.as_view(),name = "note_delete"),
     path('render/pdf/<int:pk>/download/',views.render_to_pdf_download_view,name = "render_to_pdf_download"),
     path('render/pdf/<int:pk>/send/email/',views.render_to_pdf_mail_view,name = "render_to_pdf_mail"),
+    path('view/all/',views.viewallnotes,name = "view_all_notes"),
 ]
