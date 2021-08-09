@@ -1,11 +1,12 @@
 from django.http.response import Http404
 from django.shortcuts import render,redirect
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.models import User
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Note
-from .forms import NoteCreationForm
+from .models import Note,Profile
+from .forms import NoteCreationForm,UserProfileForm,ProfileForm
 # Create your views here.
 #Class Based
 class NoteDetailView(generic.DetailView):
@@ -54,3 +55,6 @@ def create_note(request):
             return render(request, 'lazynotes/add_notes.html', {'form':NoteCreationForm(), 'error': messages.error(request,'Bad data passed in. Try again.')})
     else:
         return render(request,'lazynotes/add_notes.html',{'form':NoteCreationForm()})
+@login_required
+def profile(request,slug):
+   pass

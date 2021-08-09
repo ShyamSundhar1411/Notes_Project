@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from ckeditor_uploader.fields import RichTextUploadingField
 from autoslug import AutoSlugField
+import uuid
 
 # Create your models here.
 class Note(models.Model):
@@ -32,7 +33,7 @@ class Profile(models.Model):
         return self.user.username
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.user.username)
+            self.slug = slugify(uuid.uuid4())
         super(Profile,self).save(*args,**kwargs)
 @receiver(post_save,sender = User)
 def create_profile(sender,instance,created,**kwargs):
