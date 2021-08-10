@@ -20,11 +20,9 @@ from django.conf import settings
 from allauth.account import views as auth_views
 from filebrowser.sites import site
 from lazynotes import views
-from . import utils
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.home,name = "home"),
-    path('upload_image/', utils.upload_image),
     path('notes/',include("lazynotes.urls")),
     path('tinymce/',include("tinymce.urls")),
     #Authentication
