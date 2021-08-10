@@ -88,11 +88,7 @@ WSGI_APPLICATION = 'notes.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': env.str('ENGINE'),
-        'NAME': env.str('NAME'),
-        'USER':env.str('USER'),
-        'PASSWORD':env.str('PASSWORD'),
-        'HOST':env.str('HOST'),
-        'PORT':env.str('PORT'),
+        'NAME': BASE_DIR / env.str('NAME'),
     }
 }
 

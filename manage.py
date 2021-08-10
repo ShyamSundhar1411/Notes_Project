@@ -5,7 +5,15 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
+    if os.getcwd() != '/app':
+        try:
+            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.local_settings')
+        except:
+            print('Looks Like the local settings are missing. Importing from production settings')
+            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
+    else:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
