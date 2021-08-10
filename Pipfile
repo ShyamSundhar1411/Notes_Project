@@ -20,6 +20,8 @@ psycopg2 = "*"
 psycopg2-binary = "*"
 django-environ = "*"
 django-crispy-forms = "*"
+celery = "*"
+django-celery-results = "*"
 
 [dev-packages]
 
