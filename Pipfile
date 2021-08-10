@@ -23,8 +23,7 @@ celery = "*"
 django-celery-results = "*"
 xhtml2pdf = "*"
 django-filebrowser = "*"
-django-tinymce4-lite = "*"
-pyenchant = "*"
+django-tinymce = "*"
 
 [dev-packages]
 
