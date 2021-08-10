@@ -1,42 +1,76 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load crispy_forms_tags %}
 <div class = "container">
     <h1 class = "text-center">{{user.username}}'s Note{{Notes.count|pluralize}}</h1>
     <hr/>
-    {% if Notes %}
+    <form method = 'GET'>
+        <div class = "row">
+            <div class = "col">
+                {{filterer.form.title|as_crispy_field}}
+            </div>
+            <div class = "col">
+                {{filterer.form.updated_on|as_crispy_field}}
+            </div>
+            <div class = "col">
+                {{filterer.form.subject|as_crispy_field}}
+            </div> 
+            <div class="col-auto text-center d-flex">
+                <button type="submit" class="btn btn-outline-primary align-self-end active" aria-pressed="true">Search</button>
+                </div>
+        </div>
+    </form>
+    {% if object_list %}
     <div class='container d-inline-block'>
         <div class = "row">
-            {% for note in Notes %}
-                <div class = "col-lg-4 col-md-6">
-                    <div class="card custom-card border border-dark" style = 'margin-bottom: 15px;'>
-                        <a class = "custom-link"href="{% url 'note_detail' note.id note.slug %}">
-                            <div class="card-body">
-                                <h5 class="card-title">Title : {{note.title}}</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Subject :  {{note.subject}}</h6>
-                                <h6 class="card-subtitle mb-2 text-muted"><i class="fas fa-calendar-day"></i> {{note.updated_on}}</h6>
-                                <div class = "row">
-                                    <p class="card-text">{{ note.notes|safe|truncatechars:150 }}</p>
-                                </div>
-                                <br/>
-                                <div class = "d-inline-block">
-                                    <a href="{% url 'note_detail' note.id note.slug %}" class="btn btn-success me-2">View</a>
-                                    <a href="{% url 'note_update' note.id note.slug %}" class="btn btn-primary me-2">Update</a>
-                                    <a href="#" class="btn btn-danger">Delete</a>
-                                </div>
+            {% for note in filterer.qs %}
+            <div class = "col-lg-4 col-md-6">
+                <div class="card custom-card border border-dark" style = 'margin-bottom: 15px;'>
+                    <a class = "custom-link"href="{% url 'note_detail' note.id note.slug %}">
+                        <div class="card-body">
+                            <h5 class="card-title">Title : {{note.title}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Subject :  {{note.subject}}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted"><i class="fas fa-calendar-day"></i> {{note.updated_on}}</h6>
+                            <div class = "row">
+                                <p class="card-text">{{ note.notes|safe|truncatechars:150 }}</p>
                             </div>
-                        </a>
-                    </div>
+                            <br/>
+                            <div class = "d-inline-block">
+                                <a href="{% url 'note_detail' note.id note.slug %}" class="btn btn-success me-2">View</a>
+                                <a href="{% url 'note_update' note.id note.slug %}" class="btn btn-primary me-2">Update</a>
+                                <a href="{% url 'note_delete' note.id note.slug %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
+        </div>
     {% else %}
         <h3 class = 'text-center'>No Notes Added. Wanna Add some ?</h3>
         <div class = "d-flex d-inline-block justify-content-center">
-            <a href = "{% url 'note_create' %}" class = "btn btn-primary"><i class="fas fa-plus"></i> Add Note</a>
+                <a href = "{% url 'note_create' %}" class = "btn btn-primary"><i class="fas fa-plus"></i> Add Note</a>
         </div>
     </div>
-    {% endif %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_object.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_object.previous_page_number }}">previous</a>
+            {% endif %}
     
+            <span class="current">
+                Page {{ page_object.number }} of {{ page_object.paginator.num_pages }}.
+            </span>
+    
+            {% if page_object.has_next %}
+                <!-- https://stackoverflow.com/questions/52007038/pagination-using-listview-and-a-dynamic-filtered-queryset -->
+                <a href="?{{ request.GET.urlencode }}&page={{ page_object.next_page_number }}">next</a>
+                <a href="?{{ request.GET.urlencode }}&page={{ page_object.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}    
 </div>
 {% endblock %}

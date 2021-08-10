@@ -22,7 +22,7 @@
                                 <div class = "d-inline-block">
                                     <a href="{% url 'note_detail' note.id note.slug %}" class="btn btn-success me-2">View</a>
                                     <a href="{% url 'note_update' note.id note.slug %}" class="btn btn-primary me-2">Update</a>
-                                    <a href="#" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'note_delete' note.id note.slug %}" class="btn btn-danger">Delete</a>
                                 </div>
                             </div>
                         </a>
