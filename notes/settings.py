@@ -168,7 +168,7 @@ EMAIL_HOST = env.str('EMAIL_HOST')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env.int('EMAIL_PORT')
-DEFAULT_FROM_EMAIL = 'CodeBusters Team <noreply@expensemanager.com>'
+DEFAULT_FROM_EMAIL = 'LazyNotes Team <noreply@lazynotes.com>'
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-secondary',
     messages.INFO: 'alert-info',
