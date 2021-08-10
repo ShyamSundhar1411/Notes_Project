@@ -104,7 +104,7 @@ def profile(request,slug):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request,'Profile Update Successfully')
+            messages.success(request,'Profile Updated Successfully')
             return redirect('profile',slug = request.user.profile.slug)
         else:
             return render(request, 'account/profile.html', {'user_form':user_form,'profile_form':profile_form,'user_form_errors':user_form.errors,'profile_form_errors':profile_form.errors})

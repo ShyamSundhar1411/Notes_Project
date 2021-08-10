@@ -183,7 +183,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_RESULT_BACKEND = 'django-cache'
-CELERY_CACHE_BACKEND = 'default'CKEDITOR_CONFIGS = {
+CELERY_CACHE_BACKEND = 'default'
+CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
