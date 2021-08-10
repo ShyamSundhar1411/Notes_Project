@@ -1,12 +1,6 @@
 from django import forms
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.contrib.auth.models import User
 from . models import Note,Profile
-class NoteCreationForm(forms.ModelForm):
-    notes = forms.CharField(widget=CKEditorUploadingWidget)
-    class Meta:
-        model = Note
-        fields = ['title','subject','notes']
 class UserForm(forms.ModelForm):
     class Meta:
         model = User

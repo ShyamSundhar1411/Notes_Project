@@ -13,11 +13,19 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from . models import Note,Profile
-from . forms import NoteCreationForm,UserForm,ProfileForm
+from . forms import UserForm,ProfileForm
 from . filters import NoteFilter
 from . tasks import send_requested_pdf,send_requested_pdf_on_delete
 # Create your views here.
 #Class Based
+class NoteCreateView(LoginRequiredMixin,generic.CreateView):
+    model = Note
+    fields = ['title','subject','notes']
+    template_name = "lazynotes/add_notes.html"
+    success_url = reverse_lazy('home')
+    def form_valid(self,form):
+        form.instance.user = self.request.user
+        return super(NoteCreateView, self).form_valid(form)
 class NoteDetailView(LoginRequiredMixin,generic.DetailView):
     model = Note
     slug_field = Note.slug
@@ -83,19 +91,6 @@ def home(request):
 def viewallnotes(request):
     notes = Note.objects.filter(user = request.user).order_by('-updated_on')
     return render(request,'lazynotes/viewallnotes.html',{"Notes":notes})
-@login_required
-def create_note(request):
-    if request.method=='POST':
-        try:
-            form = NoteCreationForm(request.POST,request.FILES)
-            newform = form.save(commit=False)
-            newform.user = request.user
-            newform.save()
-            return redirect('home')
-        except ValueError:
-            return render(request, 'lazynotes/add_notes.html', {'form':NoteCreationForm(), 'error': messages.error(request,'Bad data passed in. Try again.')})
-    else:
-        return render(request,'lazynotes/add_notes.html',{'form':NoteCreationForm()})
 @login_required
 def profile(request,slug):
     if request.method == 'POST':

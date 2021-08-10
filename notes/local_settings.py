@@ -40,8 +40,7 @@ INSTALLED_APPS = [
     'lazynotes',
     #ThirdParty Apps
     'autoslug',
-    'ckeditor',
-    'ckeditor_uploader',
+    'tinymce',
     'crispy_forms',
     'django_celery_results',
     #Authentication
@@ -146,8 +145,6 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_IMAGE_BACKEND = "pillow"
 #Email Backends
 EMAIL_BACKEND = env.str('EMAIL_BACKEND')
 EMAIL_USE_TLS = True
@@ -164,12 +161,27 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
  }
-CRISPY_TEMPLATE_PACK = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CELERY_RESULT_BACKEND = 'django-cache'
+TINYMCE_DEFAULT_CONFIG = {
+    "height": "320px",
+    "width": "960px",
+    "menubar": "file edit view insert format tools table help",
+    "plugins": "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code "
+    "fullscreen insertdatetime media table paste code help wordcount spellchecker",
+    "toolbar": "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft "
+    "aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor "
+    "backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | "
+    "fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | "
+    "a11ycheck ltr rtl | showcomments addcomment code",
+    "custom_undo_redo_levels": 10  # To force a specific language instead of the Django current language.
+}
+TINYMCE_SPELLCHECKER = True
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 CELERY_CACHE_BACKEND = 'default'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
