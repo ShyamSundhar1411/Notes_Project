@@ -186,13 +186,7 @@ CELERY_RESULT_BACKEND = 'django-cache'
 CELERY_CACHE_BACKEND = 'default'
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'Custom',
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source']
-        ],
+        'toolbar': 'basic',
         'width': '100%'
     },
 }
@@ -212,3 +206,4 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+X_FRAME_OPTIONS = 'SAMEORIGIN'
