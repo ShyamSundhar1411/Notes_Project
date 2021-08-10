@@ -5,14 +5,7 @@ import sys
 
 
 def main():
-    if os.getcwd !='/app':
-        try:
-            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.local_settings')
-        except:
-            print('In production mode')
-            os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
-    else: 
-        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
