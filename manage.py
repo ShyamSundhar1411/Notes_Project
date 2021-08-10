@@ -12,7 +12,6 @@ def main():
             print('In production mode')
             os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
     else: 
-    """Run administrative tasks."""
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notes.settings')
     try:
         from django.core.management import execute_from_command_line
