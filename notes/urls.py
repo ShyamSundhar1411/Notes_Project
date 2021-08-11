@@ -18,7 +18,6 @@ from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
 from allauth.account import views as auth_views
-from filebrowser.sites import site
 from lazynotes import views
 urlpatterns = [
     path('admin/', admin.site.urls),
