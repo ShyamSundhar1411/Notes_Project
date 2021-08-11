@@ -8,7 +8,9 @@
         {% csrf_token %}
         {{form.media}}
         {{form|crispy}}
-        <button class = "btn btn-primary py-1" type = "submit"><i class="fas fa-plus"></i> Add</button>
+        <div class = "d-inline-block py-2">
+            <button class = "btn btn-primary py-1" type = "submit"><i class="fas fa-plus"></i> Add</button>
+        </div>
     </form>
 </div>
 {% endblock %}
