@@ -23,7 +23,7 @@ environ.Env.read_env()
 SECRET_KEY = env.str('SECRET_KEY', default='ThisIsAWeakSauceSecretKey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['lazynotes.herokuapp.com','https://lazynotes.herokuapp.com','www.lazynotes.herokuapp.com','http://lazynotes.herokuapp.com']
 
